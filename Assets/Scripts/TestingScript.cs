@@ -5,14 +5,17 @@ using UnityEngine;
 
 public class TestingScript : MonoBehaviour
 {
+    [SerializeField] Vector3 a;
+    [SerializeField] Vector3 b;
+
 
     private void Awake()
     {
-        float elo = 0;
-        KosciachTween.Number(elo, 10, 1, (float val) =>
-        {
-            elo = val;
-            Debug.Log(elo);
-        });
+        KosciachDelay.Delay(gameObject, 3, Test);
+    }
+
+    private void Test()
+    {
+
     }
 }
