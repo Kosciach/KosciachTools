@@ -5,17 +5,14 @@ using UnityEngine;
 
 public class TestingScript : MonoBehaviour
 {
-    [SerializeField] Vector3 a;
-    [SerializeField] Vector3 b;
-
-
     private void Awake()
     {
-        KosciachDelay.Delay(gameObject, 3, Test);
+        KosciachDelay.Delay(3, Test);
     }
 
     private void Test()
     {
-
+        KosciachTween.TweenPos(transform, transform.forward * 5, 3, null, null, TweenEase.EaseInOutSine);
     }
+
 }

@@ -7,9 +7,43 @@ namespace KosciachTools
 {
     public static class KosciachDelay
     {
-        private static Dictionary<GameObject, List<IEnumerator>> _delays = new Dictionary<GameObject, List<IEnumerator>>();
-        public static Dictionary<GameObject, List<IEnumerator>> Delays { get { return _delays; } }
+        //Delay
+        public static IEnumerator Delay(float delayTime, Action callback)
+        {
+            if(delayTime < 0)
+            {
+                Debug.LogWarning("KosciachDelay - delayTime is negative!");
+                return null;
+            }
+            if (callback == null)
+            {
+                Debug.LogWarning("KosciachDelay - callback is null!");
+                return null;
+            }
 
+            IEnumerator delay = ExecuteWithDelay(delayTime, callback);
+            KosciachDelayRunner.Instance.StartCoroutine(delay);
+            return delay;
+        }
+        private static IEnumerator ExecuteWithDelay(float delayTime, Action callback)
+        {
+            yield return new WaitForSeconds(delayTime);
+
+            callback.Invoke();
+        }
+
+
+        //DelayUtility
+        public static void CancelDelay(IEnumerator delay)
+        {
+            if(delay == null)
+            {
+                Debug.LogWarning("KosciachDelay - cancel delay is null!");
+                return;
+            }
+
+            KosciachDelayRunner.Instance.StopCoroutine(delay);
+        }
         private class KosciachDelayRunner : MonoBehaviour
         {
             private static KosciachDelayRunner _instance;
@@ -26,51 +60,6 @@ namespace KosciachTools
                     return _instance;
                 }
             }
-        }
-
-
-
-        public static void Delay(GameObject gameObject, float delayTime, Action callback)
-        {
-            if (gameObject == null)
-            {
-                Debug.LogWarning("Delay: GameObject is null.");
-                return;
-            }
-
-            if (!_delays.ContainsKey(gameObject))
-                _delays[gameObject] = new List<IEnumerator>();
-
-            IEnumerator delay = ExecuteWithDelay(gameObject, delayTime, callback);
-            _delays[gameObject].Add(delay);
-            KosciachDelayRunner.Instance.StartCoroutine(delay);
-        }
-
-        private static IEnumerator ExecuteWithDelay(GameObject gameObject, float delayTime, Action callback)
-        {
-            yield return new WaitForSeconds(delayTime);
-
-            if (_delays.ContainsKey(gameObject))
-            {
-                callback();
-                _delays[gameObject].RemoveAt(0);
-            }
-        }
-
-        public static void CancelDelay(GameObject gameObject)
-        {
-            if (gameObject == null)
-            {
-                Debug.LogWarning("CancelDelay: GameObject is null.");
-                return;
-            }
-
-            if (!_delays.ContainsKey(gameObject)) return;
-
-            foreach (IEnumerator delay in _delays[gameObject])
-                KosciachDelayRunner.Instance.StopCoroutine(delay);
-
-            _delays.Remove(gameObject);
         }
     }
 }
