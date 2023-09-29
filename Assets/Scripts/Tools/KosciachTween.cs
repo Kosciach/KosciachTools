@@ -231,6 +231,41 @@ namespace KosciachTools
         }
 
 
+        //TweenScale
+        public static IEnumerator TweenScale(Transform transform, Vector3 target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            IEnumerator tween = LerpScale(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        private static IEnumerator LerpScale(Transform transform, Vector3 target, float tweenTime, Action onUpdate, Action onFinish, TweenEase tweenEase)
+        {
+            Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
+            Vector3 startScale = transform.localScale;
+            float timeElapsed = 0;
+
+            while (timeElapsed < tweenTime)
+            {
+                float time = timeElapsed / tweenTime;
+                float timeWithEase = easeMethod(time);
+                transform.localScale = Vector3.LerpUnclamped(startScale, target, timeWithEase);
+                onUpdate?.Invoke();
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
+            transform.localScale = target;
+            onUpdate?.Invoke();
+            onFinish?.Invoke();
+        }
+
+
+
         //TweenVectors
         public static IEnumerator TweenVector2(Vector2 from, Vector2 to, float tweenTime, Action<Vector2> onUpdate, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
@@ -401,63 +436,63 @@ namespace KosciachTools
         private const float _bounceDenominatorConst = 2.75f;
 
         //Linear
-        public static float Linear(float time) => time;
+        private static float Linear(float time) => time;
         //Sine
-        public static float EaseInSine(float time) => (float)1-Mathf.Cos((time * Mathf.PI) / 2);
-        public static float EaseOutSine(float time) => (float)Mathf.Sin((time * Mathf.PI) / 2);
-        public static float EaseInOutSine(float time) => (float)-(Mathf.Cos(Mathf.PI * time) - 1) / 2;
+        private static float EaseInSine(float time) => (float)1-Mathf.Cos((time * Mathf.PI) / 2);
+        private static float EaseOutSine(float time) => (float)Mathf.Sin((time * Mathf.PI) / 2);
+        private static float EaseInOutSine(float time) => (float)-(Mathf.Cos(Mathf.PI * time) - 1) / 2;
         //Cubic
-        public static float EaseInCubic(float time) => time * time * time;
-        public static float EaseOutCubic(float time) => 1 - Mathf.Pow(1 - time, 3);
-        public static float EaseInOutCubic(float time) => time < 0.5f ? 4 * time * time * time : 1 - Mathf.Pow(-2 * time + 2, 3) / 2;
+        private static float EaseInCubic(float time) => time * time * time;
+        private static float EaseOutCubic(float time) => 1 - Mathf.Pow(1 - time, 3);
+        private static float EaseInOutCubic(float time) => time < 0.5f ? 4 * time * time * time : 1 - Mathf.Pow(-2 * time + 2, 3) / 2;
         //Quint
-        public static float EaseInQuint(float time) => time * time * time * time * time;
-        public static float EaseOutQuint(float time) => 1 - Mathf.Pow(1 - time, 5);
-        public static float EaseInOutQuint(float time) => time < 0.5f ? 16 * time * time * time * time * time : 1 - Mathf.Pow(-2 * time + 2, 5) / 2;
+        private static float EaseInQuint(float time) => time * time * time * time * time;
+        private static float EaseOutQuint(float time) => 1 - Mathf.Pow(1 - time, 5);
+        private static float EaseInOutQuint(float time) => time < 0.5f ? 16 * time * time * time * time * time : 1 - Mathf.Pow(-2 * time + 2, 5) / 2;
         //Circ
-        public static float EaseInCirc(float time) => 1 - Mathf.Sqrt(1 - Mathf.Pow(time, 2));
-        public static float EaseOutCirc(float time) => Mathf.Sqrt(1 - Mathf.Pow(time - 1, 2));
-        public static float EaseInOutCirc(float time) => time < 0.5f ? (1 - Mathf.Sqrt(1 - Mathf.Pow(2 * time, 2))) / 2 : (Mathf.Sqrt(1 - Mathf.Pow(-2 * time + 2, 2)) + 1) / 2;
+        private static float EaseInCirc(float time) => 1 - Mathf.Sqrt(1 - Mathf.Pow(time, 2));
+        private static float EaseOutCirc(float time) => Mathf.Sqrt(1 - Mathf.Pow(time - 1, 2));
+        private static float EaseInOutCirc(float time) => time < 0.5f ? (1 - Mathf.Sqrt(1 - Mathf.Pow(2 * time, 2))) / 2 : (Mathf.Sqrt(1 - Mathf.Pow(-2 * time + 2, 2)) + 1) / 2;
         //Elastic
-        public static float EaseInElastic(float time) => time == 0 ? 0 : time == 1 ? 1 : -Mathf.Pow(2, 10 * time - 10) * Mathf.Sin((time * 10 - 10.75f) * _elasticConst1);
-        public static float EaseOutElastic(float time) => time == 0 ? 0 : time == 1 ? 1 : Mathf.Pow(2, -10 * time) * Mathf.Sin((time* 10 - 0.75f) * _elasticConst1) + 1;
-        public static float EaseInOutElastic(float time)
+        private static float EaseInElastic(float time) => time == 0 ? 0 : time == 1 ? 1 : -Mathf.Pow(2, 10 * time - 10) * Mathf.Sin((time * 10 - 10.75f) * _elasticConst1);
+        private static float EaseOutElastic(float time) => time == 0 ? 0 : time == 1 ? 1 : Mathf.Pow(2, -10 * time) * Mathf.Sin((time* 10 - 0.75f) * _elasticConst1) + 1;
+        private static float EaseInOutElastic(float time)
         {
             return time == 0 ? 0 : time == 1 ? 1 : time < 0.5f ?
                 -(Mathf.Pow(2, 20 * time - 10) * Mathf.Sin((20 * time - 11.125f) * _elasticConst2)) / 2 :
                 (Mathf.Pow(2, -20 * time + 10) * Mathf.Sin((20 * time - 11.125f) * _elasticConst2)) / 2 + 1;
         }
         //Quad
-        public static float EaseInQuad(float time) => time * time;
-        public static float EaseOutQuad(float time) => 1 - (1 - time) * (1 - time);
-        public static float EaseInOutQuad(float time) => time < 0.5f ? 2 * time * time : 1 - Mathf.Pow(-2 * time + 2, 2) / 2;
+        private static float EaseInQuad(float time) => time * time;
+        private static float EaseOutQuad(float time) => 1 - (1 - time) * (1 - time);
+        private static float EaseInOutQuad(float time) => time < 0.5f ? 2 * time * time : 1 - Mathf.Pow(-2 * time + 2, 2) / 2;
         //Quart
-        public static float EaseInQuart(float time) => time * time * time * time;
-        public static float EaseOutQuart(float time) => 1 - Mathf.Pow(1 - time, 4);
-        public static float EaseInOutQuart(float time) => time < 0.5f ? 8 * time * time * time * time : 1 - Mathf.Pow(-2 * time + 2, 4) / 2;
+        private static float EaseInQuart(float time) => time * time * time * time;
+        private static float EaseOutQuart(float time) => 1 - Mathf.Pow(1 - time, 4);
+        private static float EaseInOutQuart(float time) => time < 0.5f ? 8 * time * time * time * time : 1 - Mathf.Pow(-2 * time + 2, 4) / 2;
         //Expo
-        public static float EaseInExpo(float time) => time == 0 ? 0 : Mathf.Pow(2, 10 * time - 10);
-        public static float EaseOutExpo(float time) => time == 1 ? 1 : 1 - Mathf.Pow(2, -10 * time);
-        public static float EaseInOutExpo(float time) => time == 0 ? 0 : time == 1 ? 1 : time < 0.5f ? Mathf.Pow(2, 20 * time - 10) / 2 : (2 - Mathf.Pow(2, -20 * time + 10)) / 2;
+        private static float EaseInExpo(float time) => time == 0 ? 0 : Mathf.Pow(2, 10 * time - 10);
+        private static float EaseOutExpo(float time) => time == 1 ? 1 : 1 - Mathf.Pow(2, -10 * time);
+        private static float EaseInOutExpo(float time) => time == 0 ? 0 : time == 1 ? 1 : time < 0.5f ? Mathf.Pow(2, 20 * time - 10) / 2 : (2 - Mathf.Pow(2, -20 * time + 10)) / 2;
         //Back
-        public static float EaseInBack(float time) => _backConst3 * time * time * time - _backConst1 * time * time;
-        public static float EaseOutBack(float time) => 1 + _backConst3 * Mathf.Pow(time - 1, 3) + _backConst1 * Mathf.Pow(time - 1, 2);
-        public static float EaseInOutBack(float time)
+        private static float EaseInBack(float time) => _backConst3 * time * time * time - _backConst1 * time * time;
+        private static float EaseOutBack(float time) => 1 + _backConst3 * Mathf.Pow(time - 1, 3) + _backConst1 * Mathf.Pow(time - 1, 2);
+        private static float EaseInOutBack(float time)
         {
             return time < 0.5f ? 
                 (Mathf.Pow(2 * time, 2) * ((_backConst2 + 1) * 2 * time - _backConst2)) / 2 : 
                 (Mathf.Pow(2 * time - 2, 2) * ((_backConst2 + 1) * (time * 2 - 2) + _backConst2) + 2) / 2;
         }
         //Bounce
-        public static float EaseInBounce(float time) => 1 - EaseOutBounce(1 - time);
-        public static float EaseOutBounce(float time)
+        private static float EaseInBounce(float time) => 1 - EaseOutBounce(1 - time);
+        private static float EaseOutBounce(float time)
         {
             if (time < 1 / _bounceDenominatorConst) return _bounceNumeratorConst * time * time;
             else if (time < 2 / _bounceDenominatorConst) return _bounceNumeratorConst * (time -= 1.5f / _bounceDenominatorConst) * time + 0.75f;
             else if (time < 2.5f / _bounceDenominatorConst) return _bounceNumeratorConst * (time -= 2.25f / _bounceDenominatorConst) * time + 0.9375f;
             else return _bounceNumeratorConst * (time -= 2.625f / _bounceDenominatorConst) * time + 0.984375f;
         }
-        public static float EaseInOutBounce(float time) => time < 0.5f ? (1 - EaseOutBounce(1 - 2 * time)) / 2 : (1 + EaseOutBounce(2 * time - 1)) / 2;
+        private static float EaseInOutBounce(float time) => time < 0.5f ? (1 - EaseOutBounce(1 - 2 * time)) / 2 : (1 + EaseOutBounce(2 * time - 1)) / 2;
 
 
         private static Func<float, float>[] _easeMethods =
