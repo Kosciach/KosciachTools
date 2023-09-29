@@ -6,7 +6,7 @@ namespace KosciachTools
 {
     public static class KosciachTween
     {
-        //TweenNumbers
+        //TweenNumbers--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public static IEnumerator TweenNumber(float from, float to, float tweenTime, Action<float> onUpdate, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if(tweenTime < 0)
@@ -38,7 +38,8 @@ namespace KosciachTools
         }
 
 
-        //TweenPos
+
+        //TweenPos--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public static IEnumerator TweenPos(Transform transform, Vector3 target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if (tweenTime < 0)
@@ -48,6 +49,45 @@ namespace KosciachTools
             }
 
             IEnumerator tween = LerpPos(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenPosX(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetPos = new Vector3(target, transform.position.y, transform.position.z);
+            IEnumerator tween = LerpPos(transform, targetPos, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenPosY(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetPos = new Vector3(transform.position.x, target, transform.position.z);
+            IEnumerator tween = LerpPos(transform, targetPos, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenPosZ(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetPos = new Vector3(transform.position.x, transform.position.y, target);
+            IEnumerator tween = LerpPos(transform, targetPos, tweenTime, onUpdate, onFinish, tweenEase);
             KosciachTweenRunner.Instance.StartCoroutine(tween);
             return tween;
         }
@@ -70,6 +110,7 @@ namespace KosciachTools
             onUpdate?.Invoke();
             onFinish?.Invoke();
         }
+
         public static IEnumerator TweenPosLocal(Transform transform, Vector3 target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if(tweenTime < 0)
@@ -79,6 +120,45 @@ namespace KosciachTools
             }
 
             IEnumerator tween = LerpPosLocal(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenPosXLocal(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetPos = new Vector3(target, transform.localPosition.y, transform.localPosition.z);
+            IEnumerator tween = LerpPosLocal(transform, targetPos, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenPosYLocal(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetPos = new Vector3(transform.localPosition.x, target, transform.localPosition.z);
+            IEnumerator tween = LerpPosLocal(transform, targetPos, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenPosZLocal(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetPos = new Vector3(transform.localPosition.x, transform.localPosition.y, target);
+            IEnumerator tween = LerpPosLocal(transform, targetPos, tweenTime, onUpdate, onFinish, tweenEase);
             KosciachTweenRunner.Instance.StartCoroutine(tween);
             return tween;
         }
@@ -103,7 +183,8 @@ namespace KosciachTools
         }
 
 
-        //TweenRot
+
+        //TweenRot--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public static IEnumerator TweenRotEuler(Transform transform, Vector3 target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if (tweenTime < 0)
@@ -113,6 +194,45 @@ namespace KosciachTools
             }
 
             IEnumerator tween = LerpRotEuler(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenRotEulerX(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetEuler = new Vector3(target, transform.eulerAngles.y, transform.eulerAngles.z);
+            IEnumerator tween = LerpRotEuler(transform, targetEuler, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenRotEulerY(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetEuler = new Vector3(transform.eulerAngles.x, target, transform.eulerAngles.z);
+            IEnumerator tween = LerpRotEuler(transform, targetEuler, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenRotEulerZ(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetEuler = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, target);
+            IEnumerator tween = LerpRotEuler(transform, targetEuler, tweenTime, onUpdate, onFinish, tweenEase);
             KosciachTweenRunner.Instance.StartCoroutine(tween);
             return tween;
         }
@@ -135,6 +255,7 @@ namespace KosciachTools
             onUpdate?.Invoke();
             onFinish?.Invoke();
         }
+
         public static IEnumerator TweenRotEulerLocal(Transform transform, Vector3 target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if (tweenTime < 0)
@@ -144,6 +265,45 @@ namespace KosciachTools
             }
 
             IEnumerator tween = LerpRotEulerLocal(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenRotEulerXLocal(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetEuler = new Vector3(target, transform.localEulerAngles.y, transform.localEulerAngles.z);
+            IEnumerator tween = LerpRotEulerLocal(transform, targetEuler, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenRotEulerYLocal(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetEuler = new Vector3(transform.localEulerAngles.x, target, transform.localEulerAngles.z);
+            IEnumerator tween = LerpRotEulerLocal(transform, targetEuler, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenRotEulerZLocal(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetEuler = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, target);
+            IEnumerator tween = LerpRotEulerLocal(transform, targetEuler, tweenTime, onUpdate, onFinish, tweenEase);
             KosciachTweenRunner.Instance.StartCoroutine(tween);
             return tween;
         }
@@ -231,7 +391,8 @@ namespace KosciachTools
         }
 
 
-        //TweenScale
+
+        //TweenScale--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public static IEnumerator TweenScale(Transform transform, Vector3 target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if (tweenTime < 0)
@@ -241,6 +402,45 @@ namespace KosciachTools
             }
 
             IEnumerator tween = LerpScale(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenScaleX(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetScale = new Vector3(target, transform.localScale.y, transform.localScale.z);
+            IEnumerator tween = LerpScale(transform, targetScale, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenScaleY(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetScale = new Vector3(transform.localScale.x, target, transform.localScale.z);
+            IEnumerator tween = LerpScale(transform, targetScale, tweenTime, onUpdate, onFinish, tweenEase);
+            KosciachTweenRunner.Instance.StartCoroutine(tween);
+            return tween;
+        }
+        public static IEnumerator TweenScaleZ(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+            Vector3 targetScale = new Vector3(transform.localScale.x, transform.localScale.y, target);
+            IEnumerator tween = LerpScale(transform, targetScale, tweenTime, onUpdate, onFinish, tweenEase);
             KosciachTweenRunner.Instance.StartCoroutine(tween);
             return tween;
         }
@@ -266,7 +466,7 @@ namespace KosciachTools
 
 
 
-        //TweenVectors
+        //TweenVectors--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public static IEnumerator TweenVector2(Vector2 from, Vector2 to, float tweenTime, Action<Vector2> onUpdate, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if (tweenTime < 0)
@@ -327,7 +527,8 @@ namespace KosciachTools
         }
 
 
-        //TweenColor
+
+        //TweenColor--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public static IEnumerator TweenColor(Color from, Color to, float tweenTime, Action<Color> onUpdate, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if(tweenTime < 0)
@@ -358,7 +559,8 @@ namespace KosciachTools
         }
 
 
-        //TweenCanvasGroup
+
+        //TweenCanvasGroup--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public static IEnumerator TweenCanvasGroup(CanvasGroup canvasGroup, float targetAlpha, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if (tweenTime < 0)
@@ -393,7 +595,8 @@ namespace KosciachTools
 
 
 
-        //TweenUtility
+
+        //TweenUtility--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public static void CancelTween(IEnumerator tween)
         {
             if(tween == null)
@@ -424,7 +627,8 @@ namespace KosciachTools
 
 
 
-        //Easing
+
+        //Easing--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private const float _elasticConst1 = (2 * Mathf.PI) / 3;
         private const float _elasticConst2 = (2 * Mathf.PI) / 4.5f;
 
@@ -435,25 +639,25 @@ namespace KosciachTools
         private const float _bounceNumeratorConst = 7.5625f;
         private const float _bounceDenominatorConst = 2.75f;
 
-        //Linear
+        //Linear--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float Linear(float time) => time;
-        //Sine
+        //Sine--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float EaseInSine(float time) => (float)1-Mathf.Cos((time * Mathf.PI) / 2);
         private static float EaseOutSine(float time) => (float)Mathf.Sin((time * Mathf.PI) / 2);
         private static float EaseInOutSine(float time) => (float)-(Mathf.Cos(Mathf.PI * time) - 1) / 2;
-        //Cubic
+        //Cubic--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float EaseInCubic(float time) => time * time * time;
         private static float EaseOutCubic(float time) => 1 - Mathf.Pow(1 - time, 3);
         private static float EaseInOutCubic(float time) => time < 0.5f ? 4 * time * time * time : 1 - Mathf.Pow(-2 * time + 2, 3) / 2;
-        //Quint
+        //Quint--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float EaseInQuint(float time) => time * time * time * time * time;
         private static float EaseOutQuint(float time) => 1 - Mathf.Pow(1 - time, 5);
         private static float EaseInOutQuint(float time) => time < 0.5f ? 16 * time * time * time * time * time : 1 - Mathf.Pow(-2 * time + 2, 5) / 2;
-        //Circ
+        //Circ--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float EaseInCirc(float time) => 1 - Mathf.Sqrt(1 - Mathf.Pow(time, 2));
         private static float EaseOutCirc(float time) => Mathf.Sqrt(1 - Mathf.Pow(time - 1, 2));
         private static float EaseInOutCirc(float time) => time < 0.5f ? (1 - Mathf.Sqrt(1 - Mathf.Pow(2 * time, 2))) / 2 : (Mathf.Sqrt(1 - Mathf.Pow(-2 * time + 2, 2)) + 1) / 2;
-        //Elastic
+        //Elastic--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float EaseInElastic(float time) => time == 0 ? 0 : time == 1 ? 1 : -Mathf.Pow(2, 10 * time - 10) * Mathf.Sin((time * 10 - 10.75f) * _elasticConst1);
         private static float EaseOutElastic(float time) => time == 0 ? 0 : time == 1 ? 1 : Mathf.Pow(2, -10 * time) * Mathf.Sin((time* 10 - 0.75f) * _elasticConst1) + 1;
         private static float EaseInOutElastic(float time)
@@ -462,19 +666,19 @@ namespace KosciachTools
                 -(Mathf.Pow(2, 20 * time - 10) * Mathf.Sin((20 * time - 11.125f) * _elasticConst2)) / 2 :
                 (Mathf.Pow(2, -20 * time + 10) * Mathf.Sin((20 * time - 11.125f) * _elasticConst2)) / 2 + 1;
         }
-        //Quad
+        //Quad--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float EaseInQuad(float time) => time * time;
         private static float EaseOutQuad(float time) => 1 - (1 - time) * (1 - time);
         private static float EaseInOutQuad(float time) => time < 0.5f ? 2 * time * time : 1 - Mathf.Pow(-2 * time + 2, 2) / 2;
-        //Quart
+        //Quart--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float EaseInQuart(float time) => time * time * time * time;
         private static float EaseOutQuart(float time) => 1 - Mathf.Pow(1 - time, 4);
         private static float EaseInOutQuart(float time) => time < 0.5f ? 8 * time * time * time * time : 1 - Mathf.Pow(-2 * time + 2, 4) / 2;
-        //Expo
+        //Expo--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float EaseInExpo(float time) => time == 0 ? 0 : Mathf.Pow(2, 10 * time - 10);
         private static float EaseOutExpo(float time) => time == 1 ? 1 : 1 - Mathf.Pow(2, -10 * time);
         private static float EaseInOutExpo(float time) => time == 0 ? 0 : time == 1 ? 1 : time < 0.5f ? Mathf.Pow(2, 20 * time - 10) / 2 : (2 - Mathf.Pow(2, -20 * time + 10)) / 2;
-        //Back
+        //Back--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float EaseInBack(float time) => _backConst3 * time * time * time - _backConst1 * time * time;
         private static float EaseOutBack(float time) => 1 + _backConst3 * Mathf.Pow(time - 1, 3) + _backConst1 * Mathf.Pow(time - 1, 2);
         private static float EaseInOutBack(float time)
@@ -483,7 +687,7 @@ namespace KosciachTools
                 (Mathf.Pow(2 * time, 2) * ((_backConst2 + 1) * 2 * time - _backConst2)) / 2 : 
                 (Mathf.Pow(2 * time - 2, 2) * ((_backConst2 + 1) * (time * 2 - 2) + _backConst2) + 2) / 2;
         }
-        //Bounce
+        //Bounce--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         private static float EaseInBounce(float time) => 1 - EaseOutBounce(1 - time);
         private static float EaseOutBounce(float time)
         {
