@@ -12,7 +12,9 @@ public class TestingScript : MonoBehaviour
 
     private void Test()
     {
-
+        KosciachTween.TweenPosX(transform, 5, 2, true);
+        KosciachTween.TweenPosY(transform, 5, 2, true);
+        KosciachTween.TweenPosZ(transform, 5, 2, true);
     }
 
 }
