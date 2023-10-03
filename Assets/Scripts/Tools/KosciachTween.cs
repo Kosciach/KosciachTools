@@ -1,12 +1,12 @@
 using System.Collections;
 using UnityEngine;
 using System;
-using UnityEngine.UIElements;
 
 namespace KosciachTools
 {
     public static class KosciachTween
     {
+        #region Tweening
         //TweenNumbers--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public static IEnumerator TweenNumber(float from, float to, float tweenTime, Action<float> onUpdate, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
@@ -41,7 +41,7 @@ namespace KosciachTools
 
 
         //TweenPos--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        public static IEnumerator TweenPos(Transform transform, Vector3 target, float tweenTime, bool local, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        public static IEnumerator TweenPos(Transform transform, Vector3 target, float tweenTime, bool local, TweenAxis tweenAxis = TweenAxis.ALL, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if (tweenTime < 0)
             {
@@ -49,169 +49,46 @@ namespace KosciachTools
                 return null;
             }
 
-            IEnumerator tween = LerpPos(transform, target, tweenTime, local, onUpdate, onFinish, tweenEase);
+            IEnumerator tween = LerpPos(transform, target, tweenTime, local, tweenAxis, onUpdate, onFinish, tweenEase);
             KosciachTweenRunner.Instance.StartCoroutine(tween);
             return tween;
         }
-        public static IEnumerator TweenPosX(Transform transform, float target, float tweenTime, bool local, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
-        {
-            if (tweenTime < 0)
-            {
-                Debug.LogWarning("KosciachTween - tweenTime is negative!");
-                return null;
-            }
-
-            IEnumerator tween = LerpPosX(transform, target, tweenTime, local, onUpdate, onFinish, tweenEase);
-            KosciachTweenRunner.Instance.StartCoroutine(tween);
-            return tween;
-        }
-        public static IEnumerator TweenPosY(Transform transform, float target, float tweenTime, bool local, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
-        {
-            if (tweenTime < 0)
-            {
-                Debug.LogWarning("KosciachTween - tweenTime is negative!");
-                return null;
-            }
-
-            IEnumerator tween = LerpPosY(transform, target, tweenTime, local, onUpdate, onFinish, tweenEase);
-            KosciachTweenRunner.Instance.StartCoroutine(tween);
-            return tween;
-        }
-        public static IEnumerator TweenPosZ(Transform transform, float target, float tweenTime, bool local, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
-        {
-            if (tweenTime < 0)
-            {
-                Debug.LogWarning("KosciachTween - tweenTime is negative!");
-                return null;
-            }
-
-            IEnumerator tween = LerpPosZ(transform, target, tweenTime, local, onUpdate, onFinish, tweenEase);
-            KosciachTweenRunner.Instance.StartCoroutine(tween);
-            return tween;
-        }
-        private static IEnumerator LerpPos(Transform transform, Vector3 target, float tweenTime, bool local, Action onUpdate, Action onFinish, TweenEase tweenEase)
+        private static IEnumerator LerpPos(Transform transform, Vector3 target, float tweenTime, bool local, TweenAxis tweenAxis, Action onUpdate, Action onFinish, TweenEase tweenEase)
         {
             Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-
-            Vector3 startPos = transform.position;
-            if(local) startPos = transform.localPosition;
-
+            Vector3 startingPos = local ? transform.localPosition : transform.position;
+            Vector3 currentPos = Vector3.zero;
             float timeElapsed = 0;
-
-
-            while(timeElapsed < tweenTime)
-            {
-                float time = timeElapsed / tweenTime;
-                float timeWithEase = easeMethod(time);
-
-                if (local) transform.localPosition = Vector3.LerpUnclamped(startPos, target, timeWithEase);
-                else transform.position = Vector3.LerpUnclamped(startPos, target, timeWithEase);
-
-                onUpdate?.Invoke();
-
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-
-
-            if (local) transform.localPosition = target;
-            else transform.position = target;
-
-            onUpdate?.Invoke();
-            onFinish?.Invoke();
-        }
-        private static IEnumerator LerpPosX(Transform transform, float target, float tweenTime, bool local, Action onUpdate, Action onFinish, TweenEase tweenEase)
-        {
-            Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-
-            float startPosX = transform.position.x;
-            if (local) startPosX = transform.localPosition.x;
-
-            float timeElapsed = 0;
-
 
             while (timeElapsed < tweenTime)
             {
                 float time = timeElapsed / tweenTime;
                 float timeWithEase = easeMethod(time);
 
-                float lerpPosX = Mathf.LerpUnclamped(startPosX, target, timeWithEase);
-                if (local) transform.localPosition = new Vector3(lerpPosX, transform.localPosition.y, transform.localPosition.z);
-                else transform.position = new Vector3(lerpPosX, transform.position.y, transform.position.z);
+                currentPos = local ? transform.localPosition : transform.position;
+
+                if (tweenAxis.HasFlag(TweenAxis.X)) currentPos.x = Mathf.LerpUnclamped(startingPos.x, target.x, timeWithEase);
+                if (tweenAxis.HasFlag(TweenAxis.Y)) currentPos.y = Mathf.LerpUnclamped(startingPos.y, target.y, timeWithEase);
+                if (tweenAxis.HasFlag(TweenAxis.Z)) currentPos.z = Mathf.LerpUnclamped(startingPos.z, target.z, timeWithEase);
+
+                if (local) transform.localPosition = currentPos;
+                else transform.position = currentPos;
 
                 onUpdate?.Invoke();
 
                 timeElapsed += Time.deltaTime;
+
                 yield return null;
             }
 
+            currentPos = local ? transform.localPosition : transform.position;
 
-            if (local) transform.localPosition = new Vector3(target, transform.localPosition.y, transform.localPosition.z);
-            else transform.position = new Vector3(target, transform.position.y, transform.position.z); 
+            if (tweenAxis.HasFlag(TweenAxis.X)) currentPos.x = target.x;
+            if (tweenAxis.HasFlag(TweenAxis.Y)) currentPos.y = target.y;
+            if (tweenAxis.HasFlag(TweenAxis.Z)) currentPos.z = target.z;
 
-            onUpdate?.Invoke();
-            onFinish?.Invoke();
-        }
-        private static IEnumerator LerpPosY(Transform transform, float target, float tweenTime, bool local, Action onUpdate, Action onFinish, TweenEase tweenEase)
-        {
-            Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-
-            float startPosY = transform.position.x;
-            if (local) startPosY = transform.localPosition.x;
-
-            float timeElapsed = 0;
-
-
-            while (timeElapsed < tweenTime)
-            {
-                float time = timeElapsed / tweenTime;
-                float timeWithEase = easeMethod(time);
-
-                float lerpPosY = Mathf.LerpUnclamped(startPosY, target, timeWithEase);
-                if (local) transform.localPosition = new Vector3(transform.localPosition.x, lerpPosY, transform.localPosition.z);
-                else transform.position = new Vector3(transform.position.x, lerpPosY, transform.position.z);
-
-                onUpdate?.Invoke();
-
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-
-
-            if (local) transform.localPosition = new Vector3(transform.localPosition.x, target, transform.localPosition.z);
-            else transform.position = new Vector3(transform.position.x, target, transform.position.z);
-
-            onUpdate?.Invoke();
-            onFinish?.Invoke();
-        }
-        private static IEnumerator LerpPosZ(Transform transform, float target, float tweenTime, bool local, Action onUpdate, Action onFinish, TweenEase tweenEase)
-        {
-            Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-
-            float startPosZ = transform.position.x;
-            if (local) startPosZ = transform.localPosition.x;
-
-            float timeElapsed = 0;
-
-
-            while (timeElapsed < tweenTime)
-            {
-                float time = timeElapsed / tweenTime;
-                float timeWithEase = easeMethod(time);
-
-                float lerpPosZ = Mathf.LerpUnclamped(startPosZ, target, timeWithEase);
-                if (local) transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, lerpPosZ);
-                else transform.position = new Vector3(transform.position.x, transform.position.y, lerpPosZ);
-
-                onUpdate?.Invoke();
-
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-
-
-            if (local) transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, target);
-            else transform.position = new Vector3(transform.position.x, transform.position.y, target);
+            if (local) transform.localPosition = currentPos;
+            else transform.position = currentPos;
 
             onUpdate?.Invoke();
             onFinish?.Invoke();
@@ -219,7 +96,7 @@ namespace KosciachTools
 
 
         //TweenRot--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        public static IEnumerator TweenRotEuler(Transform transform, Vector3 target, float tweenTime, bool local, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        public static IEnumerator TweenRotEuler(Transform transform, Vector3 target, float tweenTime, bool local, TweenAxis tweenAxis = TweenAxis.ALL, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if (tweenTime < 0)
             {
@@ -227,80 +104,51 @@ namespace KosciachTools
                 return null;
             }
 
-            IEnumerator tween = LerpRotEuler(transform, target, tweenTime, local, onUpdate, onFinish, tweenEase);
+            IEnumerator tween = LerpRotEuler(transform, target, tweenTime, local, tweenAxis, onUpdate, onFinish, tweenEase);
             KosciachTweenRunner.Instance.StartCoroutine(tween);
             return tween;
         }
-        public static IEnumerator TweenRotEulerX(Transform transform, float target, float tweenTime, bool local, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
-        {
-            if (tweenTime < 0)
-            {
-                Debug.LogWarning("KosciachTween - tweenTime is negative!");
-                return null;
-            }
-
-            Vector3 targetEuler = new Vector3(target, transform.eulerAngles.y, transform.eulerAngles.z);
-            IEnumerator tween = LerpRotEuler(transform, targetEuler, tweenTime, local, onUpdate, onFinish, tweenEase);
-            KosciachTweenRunner.Instance.StartCoroutine(tween);
-            return tween;
-        }
-        public static IEnumerator TweenRotEulerY(Transform transform, float target, float tweenTime, bool local, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
-        {
-            if (tweenTime < 0)
-            {
-                Debug.LogWarning("KosciachTween - tweenTime is negative!");
-                return null;
-            }
-
-            Vector3 targetEuler = new Vector3(transform.eulerAngles.x, target, transform.eulerAngles.z);
-            IEnumerator tween = LerpRotEuler(transform, targetEuler, tweenTime, local, onUpdate, onFinish, tweenEase);
-            KosciachTweenRunner.Instance.StartCoroutine(tween);
-            return tween;
-        }
-        public static IEnumerator TweenRotEulerZ(Transform transform, float target, float tweenTime, bool local, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
-        {
-            if (tweenTime < 0)
-            {
-                Debug.LogWarning("KosciachTween - tweenTime is negative!");
-                return null;
-            }
-
-            Vector3 targetEuler = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, target);
-            IEnumerator tween = LerpRotEuler(transform, targetEuler, tweenTime, local, onUpdate, onFinish, tweenEase);
-            KosciachTweenRunner.Instance.StartCoroutine(tween);
-            return tween;
-        }
-        private static IEnumerator LerpRotEuler(Transform transform, Vector3 target, float tweenTime, bool local, Action onUpdate, Action onFinish, TweenEase tweenEase)
+        private static IEnumerator LerpRotEuler(Transform transform, Vector3 target, float tweenTime, bool local, TweenAxis tweenAxis, Action onUpdate, Action onFinish, TweenEase tweenEase)
         {
             Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-
-            Vector3 startEuler = transform.eulerAngles;
-            if (local) startEuler = transform.localEulerAngles;
-
+            Vector3 startingEuler = local ? transform.localEulerAngles : transform.eulerAngles;
+            Vector3 currentEuler = Vector3.zero;
             float timeElapsed = 0;
 
-            while (timeElapsed < tweenTime)
+            while(timeElapsed < tweenTime)
             {
                 float time = timeElapsed / tweenTime;
                 float timeWithEase = easeMethod(time);
 
-                if(local) transform.localEulerAngles = Vector3.LerpUnclamped(startEuler, target, timeWithEase);
-                else transform.eulerAngles = Vector3.LerpUnclamped(startEuler, target, timeWithEase);
+                currentEuler = local ? transform.localEulerAngles : transform.eulerAngles;
+
+                if (tweenAxis.HasFlag(TweenAxis.X)) currentEuler.x = Mathf.LerpUnclamped(startingEuler.x, target.x, timeWithEase);
+                if (tweenAxis.HasFlag(TweenAxis.Y)) currentEuler.y = Mathf.LerpUnclamped(startingEuler.y, target.y, timeWithEase);
+                if (tweenAxis.HasFlag(TweenAxis.Z)) currentEuler.z = Mathf.LerpUnclamped(startingEuler.z, target.z, timeWithEase);
+
+                if (local) transform.localEulerAngles = currentEuler;
+                else transform.eulerAngles = currentEuler;
 
                 onUpdate?.Invoke();
+
                 timeElapsed += Time.deltaTime;
+
                 yield return null;
             }
 
-            if (local) transform.localEulerAngles = target;
-            else transform.eulerAngles = target;
+            currentEuler = local ? transform.localEulerAngles : transform.eulerAngles;
+
+            if (tweenAxis.HasFlag(TweenAxis.X)) currentEuler.x = target.x;
+            if (tweenAxis.HasFlag(TweenAxis.Y)) currentEuler.y = target.y;
+            if (tweenAxis.HasFlag(TweenAxis.Z)) currentEuler.z = target.z;
+
+            if (local) transform.localEulerAngles = currentEuler;
+            else transform.eulerAngles = currentEuler;
 
             onUpdate?.Invoke();
             onFinish?.Invoke();
         }
-
-
-        public static IEnumerator TweenRotQuaternion(Transform transform, Quaternion target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        public static IEnumerator TweenRotQuaternion(Transform transform, Quaternion target, float tweenTime, bool local, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if (tweenTime < 0)
             {
@@ -308,57 +156,34 @@ namespace KosciachTools
                 return null;
             }
 
-            IEnumerator tween = LerpRotQuaternion(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
+            IEnumerator tween = LerpRotQuaternion(transform, target, tweenTime, local, onUpdate, onFinish, tweenEase);
             KosciachTweenRunner.Instance.StartCoroutine(tween);
             return tween;
         }
-        private static IEnumerator LerpRotQuaternion(Transform transform, Quaternion target, float tweenTime, Action onUpdate, Action onFinish, TweenEase tweenEase)
+        private static IEnumerator LerpRotQuaternion(Transform transform, Quaternion target, float tweenTime, bool local, Action onUpdate, Action onFinish, TweenEase tweenEase)
         {
             Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-            Quaternion startQuaternion = transform.rotation;
+            Quaternion startQuaternion = local ? transform.localRotation : transform.rotation;
             float timeElapsed = 0;
 
             while (timeElapsed < tweenTime)
             {
                 float time = timeElapsed / tweenTime;
                 float timeWithEase = easeMethod(time);
-                transform.rotation = Quaternion.LerpUnclamped(startQuaternion, target, timeWithEase);
+
+                Quaternion rotation = Quaternion.LerpUnclamped(startQuaternion, target, timeWithEase);
+                if(local) transform.localRotation = rotation;
+                transform.rotation = rotation;
+
                 onUpdate?.Invoke();
+
                 timeElapsed += Time.deltaTime;
                 yield return null;
             }
+
+            if (local) transform.localRotation = target;
             transform.rotation = target;
-            onUpdate?.Invoke();
-            onFinish?.Invoke();
-        }
-        public static IEnumerator TweenRotQuaternionLocal(Transform transform, Quaternion target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
-        {
-            if (tweenTime < 0)
-            {
-                Debug.LogWarning("KosciachTween - tweenTime is negative!");
-                return null;
-            }
 
-            IEnumerator tween = LerpRotQuaternionLocal(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
-            KosciachTweenRunner.Instance.StartCoroutine(tween);
-            return tween;
-        }
-        private static IEnumerator LerpRotQuaternionLocal(Transform transform, Quaternion target, float tweenTime, Action onUpdate, Action onFinish, TweenEase tweenEase)
-        {
-            Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-            Quaternion startQuaternion = transform.localRotation;
-            float timeElapsed = 0;
-
-            while (timeElapsed < tweenTime)
-            {
-                float time = timeElapsed / tweenTime;
-                float timeWithEase = easeMethod(time);
-                transform.localRotation = Quaternion.LerpUnclamped(startQuaternion, target, timeWithEase);
-                onUpdate?.Invoke();
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-            transform.localRotation = target;
             onUpdate?.Invoke();
             onFinish?.Invoke();
         }
@@ -366,7 +191,7 @@ namespace KosciachTools
 
 
         //TweenScale--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        public static IEnumerator TweenScale(Transform transform, Vector3 target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
+        public static IEnumerator TweenScale(Transform transform, Vector3 target, float tweenTime, TweenAxis tweenAxis = TweenAxis.ALL, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
         {
             if (tweenTime < 0)
             {
@@ -374,122 +199,45 @@ namespace KosciachTools
                 return null;
             }
 
-            IEnumerator tween = LerpScale(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
+            IEnumerator tween = LerpScale(transform, target, tweenTime, tweenAxis, onUpdate, onFinish, tweenEase);
             KosciachTweenRunner.Instance.StartCoroutine(tween);
             return tween;
         }
-        public static IEnumerator TweenScaleX(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
-        {
-            if (tweenTime < 0)
-            {
-                Debug.LogWarning("KosciachTween - tweenTime is negative!");
-                return null;
-            }
-
-            IEnumerator tween = LerpScaleX(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
-            KosciachTweenRunner.Instance.StartCoroutine(tween);
-            return tween;
-        }
-        public static IEnumerator TweenScaleY(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
-        {
-            if (tweenTime < 0)
-            {
-                Debug.LogWarning("KosciachTween - tweenTime is negative!");
-                return null;
-            }
-
-            IEnumerator tween = LerpScaleY(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
-            KosciachTweenRunner.Instance.StartCoroutine(tween);
-            return tween;
-        }
-        public static IEnumerator TweenScaleZ(Transform transform, float target, float tweenTime, Action onUpdate = null, Action onFinish = null, TweenEase tweenEase = TweenEase.Linear)
-        {
-            if (tweenTime < 0)
-            {
-                Debug.LogWarning("KosciachTween - tweenTime is negative!");
-                return null;
-            }
-
-            IEnumerator tween = LerpScaleZ(transform, target, tweenTime, onUpdate, onFinish, tweenEase);
-            KosciachTweenRunner.Instance.StartCoroutine(tween);
-            return tween;
-        }
-        private static IEnumerator LerpScale(Transform transform, Vector3 target, float tweenTime, Action onUpdate, Action onFinish, TweenEase tweenEase)
+        private static IEnumerator LerpScale(Transform transform, Vector3 target, float tweenTime, TweenAxis tweenAxis, Action onUpdate, Action onFinish, TweenEase tweenEase)
         {
             Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-            Vector3 startScale = transform.localScale;
+            Vector3 startingScale = transform.localScale;
+            Vector3 currentScale = Vector3.zero;
             float timeElapsed = 0;
 
             while (timeElapsed < tweenTime)
             {
                 float time = timeElapsed / tweenTime;
                 float timeWithEase = easeMethod(time);
-                transform.localScale = Vector3.LerpUnclamped(startScale, target, timeWithEase);
-                onUpdate?.Invoke();
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-            transform.localScale = target;
-            onUpdate?.Invoke();
-            onFinish?.Invoke();
-        }
-        private static IEnumerator LerpScaleX(Transform transform, float target, float tweenTime, Action onUpdate, Action onFinish, TweenEase tweenEase)
-        {
-            Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-            float startScaleX = transform.localScale.x;
-            float timeElapsed = 0;
 
-            while (timeElapsed < tweenTime)
-            {
-                float time = timeElapsed / tweenTime;
-                float timeWithEase = easeMethod(time);
-                float scaleX = Mathf.LerpUnclamped(startScaleX, target, timeWithEase);
-                transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
-                onUpdate?.Invoke();
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-            transform.localScale = new Vector3(target, transform.localScale.y, transform.localScale.z);
-            onUpdate?.Invoke();
-            onFinish?.Invoke();
-        }
-        private static IEnumerator LerpScaleY(Transform transform, float target, float tweenTime, Action onUpdate, Action onFinish, TweenEase tweenEase)
-        {
-            Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-            float startScaleY = transform.localScale.y;
-            float timeElapsed = 0;
+                currentScale = transform.localScale;
 
-            while (timeElapsed < tweenTime)
-            {
-                float time = timeElapsed / tweenTime;
-                float timeWithEase = easeMethod(time);
-                float scaleY = Mathf.LerpUnclamped(startScaleY, target, timeWithEase);
-                transform.localScale = new Vector3(transform.localScale.x, scaleY, transform.localScale.z);
-                onUpdate?.Invoke();
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-            transform.localScale = new Vector3(transform.localScale.x, target, transform.localScale.z);
-            onUpdate?.Invoke();
-            onFinish?.Invoke();
-        }
-        private static IEnumerator LerpScaleZ(Transform transform, float target, float tweenTime, Action onUpdate, Action onFinish, TweenEase tweenEase)
-        {
-            Func<float, float> easeMethod = _easeMethods[(int)tweenEase];
-            float startScaleZ = transform.localScale.z;
-            float timeElapsed = 0;
+                if (tweenAxis.HasFlag(TweenAxis.X)) currentScale.x = Mathf.LerpUnclamped(startingScale.x, target.x, timeWithEase);
+                if (tweenAxis.HasFlag(TweenAxis.Y)) currentScale.y = Mathf.LerpUnclamped(startingScale.y, target.y, timeWithEase);
+                if (tweenAxis.HasFlag(TweenAxis.Z)) currentScale.z = Mathf.LerpUnclamped(startingScale.z, target.z, timeWithEase);
 
-            while (timeElapsed < tweenTime)
-            {
-                float time = timeElapsed / tweenTime;
-                float timeWithEase = easeMethod(time);
-                float scaleZ = Mathf.LerpUnclamped(startScaleZ, target, timeWithEase);
-                transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, scaleZ);
+                transform.localScale = currentScale;
+
                 onUpdate?.Invoke();
+
                 timeElapsed += Time.deltaTime;
+
                 yield return null;
             }
-            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, target);
+
+            currentScale = transform.localScale;
+
+            if (tweenAxis.HasFlag(TweenAxis.X)) currentScale.x = target.x;
+            if (tweenAxis.HasFlag(TweenAxis.Y)) currentScale.y = target.y;
+            if (tweenAxis.HasFlag(TweenAxis.Z)) currentScale.z = target.z;
+
+            transform.localScale = currentScale;
+
             onUpdate?.Invoke();
             onFinish?.Invoke();
         }
@@ -621,12 +369,12 @@ namespace KosciachTools
             canvasGroup.alpha = targetAlpha;
             onFinish?.Invoke();
         }
+        #endregion
 
 
 
 
-
-        //TweenUtility--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        #region TweeningUtility
         public static void CancelTween(IEnumerator tween)
         {
             if(tween == null)
@@ -653,12 +401,12 @@ namespace KosciachTools
                 }
             }
         }
+        #endregion
 
 
 
 
-
-        //Easing--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        #region Easing
         private const float _elasticConst1 = (2 * Mathf.PI) / 3;
         private const float _elasticConst2 = (2 * Mathf.PI) / 4.5f;
 
@@ -743,8 +491,12 @@ namespace KosciachTools
             EaseInBack,     EaseOutBack,    EaseInOutBack,
             EaseInBounce,   EaseOutBounce,  EaseInOutBounce,
         };
+        #endregion
     }
 
+
+
+    #region TweeningEnums
     public enum TweenEase
     {
         Linear,
@@ -759,4 +511,23 @@ namespace KosciachTools
         EaseInBack,     EaseOutBack,    EaseInOutBack,
         EaseInBounce,   EaseOutBounce,  EaseInOutBounce,
     }
+    [Flags]
+    public enum TweenAxis
+    { 
+        X = 1,
+        Y = 2,
+        Z = 4,
+
+        XY = X | Y,
+        XZ = X | Z,
+
+        YX = Y | X,
+        YZ = Y | Z,
+
+        ZX = Z | X,
+        ZY = Z | Y,
+
+        ALL = X | Y | Z
+    }
+    #endregion
 }
