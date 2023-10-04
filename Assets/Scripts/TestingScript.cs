@@ -1,7 +1,8 @@
-using KosciachTools;
-using System.Collections;
-using System.Collections.Generic;
+using KosciachTools.Delay;
+using KosciachTools.Tween;
+using KosciachTools.Tween2;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class TestingScript : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class TestingScript : MonoBehaviour
 
     private void Test()
     {
-        KosciachTween.TweenPos(transform, Vector3.one * 5, 2, false, TweenAxis.ALL);
+
     }
 
 }

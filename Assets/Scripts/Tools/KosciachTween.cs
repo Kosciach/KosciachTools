@@ -2,9 +2,9 @@ using System.Collections;
 using UnityEngine;
 using System;
 
-namespace KosciachTools
+namespace KosciachTools.Tween
 {
-    public static class KosciachTween
+    public class KosciachTween
     {
         #region Tweening
         //TweenNumbers--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -493,7 +493,6 @@ namespace KosciachTools
         };
         #endregion
     }
-
 
 
     #region TweeningEnums
