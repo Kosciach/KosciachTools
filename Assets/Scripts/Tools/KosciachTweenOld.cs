@@ -2,9 +2,9 @@ using System.Collections;
 using UnityEngine;
 using System;
 
-namespace KosciachTools.Tween
+namespace KosciachTools.TweenOld
 {
-    public class KosciachTween
+    public class KosciachTweenOld
     {
         #region Tweening
         //TweenNumbers--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
