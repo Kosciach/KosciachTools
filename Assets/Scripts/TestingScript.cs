@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class TestingScript : MonoBehaviour
 {
+    public Vector3 a;
+
+
     private void Awake()
     {
         KosciachDelay.Delay(1, Test);
@@ -12,8 +15,9 @@ public class TestingScript : MonoBehaviour
 
     private void Test()
     {
-        KosciachTween.Position(transform, "elo1").Run();
-        KosciachTween.Position(transform, "elo2").Run();
+        KosciachTween.Vector3D(a, Vector3.one*5, 2).SetOnUpdate((Vector3 val) =>
+        {
+            a = val;
+        }).Run();
     }
-
 }
