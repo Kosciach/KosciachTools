@@ -29,6 +29,8 @@ namespace KosciachTools.Tween
             public Action OnUpdate = null;
             public Action<Vector2> OnUpdateVector2D = null;
             public Action<Vector3> OnUpdateVector3D = null;
+            public Action<Color> OnUpdateColor = null;
+            public Action<float> OnUpdateFloat = null;
         }
 
         private static KosciachTweenRunner Runner;
@@ -125,21 +127,57 @@ namespace KosciachTools.Tween
             CurrentTween.OnUpdateVector3D = onUpdate;
             return this;
         }
+        public KosciachTween SetOnUpdate(Action<Color> onUpdate)
+        {
+            CurrentTween.OnUpdateColor = onUpdate;
+            return this;
+        }
+        public KosciachTween SetOnUpdate(Action<float> onUpdate)
+        {
+            CurrentTween.OnUpdateFloat = onUpdate;
+            return this;
+        }
+
+        public static void RemoveTween(Guid tweenKey)
+        {
+            if(tweenKey == Guid.Empty)
+            {
+                Debug.LogWarning("KosciachTween - tweenKey is empty!");
+                return;
+            }
+            if (!Tweens.ContainsKey(tweenKey))
+            {
+                Debug.LogWarning("KosciachTween - tween with this key doesn't exist!");
+                return;
+            }
+
+            Runner.StopCoroutine(Tweens[tweenKey].Coroutine);
+            Tweens.Remove(tweenKey);
+        }
+        public static int GetTweensCount()
+        {
+            return Tweens.Count;
+        }
 
 
 
         //PositionTween---------------------------------------------------------------------------------------------------------------------------------------------------------
-        public static KosciachTween Position(Transform transform, Vector3 target, float tweenTime)
+        public static KosciachTween Position(Transform transform, Vector3 to, float tweenTime)
         {
             if (tweenTime < 0)
             {
                 Debug.LogWarning("KosciachTween - tweenTime is negative!");
                 return null;
             }
+            if (transform == null)
+            {
+                Debug.LogWarning("KosciachTween - transform is null!");
+                return null;
+            }
 
 
             Guid newKey = Guid.NewGuid();
-            IEnumerator tweenCoroutine = PositionCoroutine(newKey, transform, target, tweenTime);
+            IEnumerator tweenCoroutine = PositionCoroutine(newKey, transform, to, tweenTime);
 
             Tween newTween = new Tween(newKey, tweenCoroutine);
             Tweens.Add(newKey, newTween);
@@ -147,7 +185,7 @@ namespace KosciachTools.Tween
             KosciachTween newKosciachTween = new KosciachTween(newTween);
             return newKosciachTween;
         }
-        private static IEnumerator PositionCoroutine(Guid newKey, Transform transform, Vector3 target, float tweenTime)
+        private static IEnumerator PositionCoroutine(Guid newKey, Transform transform, Vector3 to, float tweenTime)
         {
             Tween currentTween = Tweens[newKey];
 
@@ -163,9 +201,9 @@ namespace KosciachTools.Tween
                 float timeWithEase = currentTween.EaseMethod(time);
 
                 currentPosition = currentTween.IsLocal ? transform.localPosition : transform.position;
-                if (currentTween.Axis.HasFlag(TweenAxis.X)) currentPosition.x = Mathf.LerpUnclamped(startPosition.x, target.x, timeWithEase);
-                if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentPosition.y = Mathf.LerpUnclamped(startPosition.y, target.y, timeWithEase);
-                if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentPosition.z = Mathf.LerpUnclamped(startPosition.z, target.z, timeWithEase);
+                if (currentTween.Axis.HasFlag(TweenAxis.X)) currentPosition.x = Mathf.LerpUnclamped(startPosition.x, to.x, timeWithEase);
+                if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentPosition.y = Mathf.LerpUnclamped(startPosition.y, to.y, timeWithEase);
+                if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentPosition.z = Mathf.LerpUnclamped(startPosition.z, to.z, timeWithEase);
 
                 if (currentTween.IsLocal) transform.localPosition = currentPosition;
                 else transform.position = currentPosition;
@@ -178,9 +216,9 @@ namespace KosciachTools.Tween
             }
 
             currentPosition = currentTween.IsLocal ? transform.localPosition : transform.position;
-            if (currentTween.Axis.HasFlag(TweenAxis.X)) currentPosition.x = target.x;
-            if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentPosition.y = target.y;
-            if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentPosition.z = target.z;
+            if (currentTween.Axis.HasFlag(TweenAxis.X)) currentPosition.x = to.x;
+            if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentPosition.y = to.y;
+            if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentPosition.z = to.z;
 
             if (currentTween.IsLocal) transform.localPosition = currentPosition;
             else transform.position = currentPosition;
@@ -194,17 +232,22 @@ namespace KosciachTools.Tween
 
 
         //RotationTween---------------------------------------------------------------------------------------------------------------------------------------------------------
-        public static KosciachTween RotationEuler(Transform transform, Vector3 target, float tweenTime)
+        public static KosciachTween RotationEuler(Transform transform, Vector3 to, float tweenTime)
         {
             if (tweenTime < 0)
             {
                 Debug.LogWarning("KosciachTween - tweenTime is negative!");
                 return null;
             }
+            if (transform == null)
+            {
+                Debug.LogWarning("KosciachTween - transform is null!");
+                return null;
+            }
 
 
             Guid newKey = Guid.NewGuid();
-            IEnumerator tweenCoroutine = RotationEulerCoroutine(newKey, transform, target, tweenTime);
+            IEnumerator tweenCoroutine = RotationEulerCoroutine(newKey, transform, to, tweenTime);
 
             Tween newTween = new Tween(newKey, tweenCoroutine);
             Tweens.Add(newKey, newTween);
@@ -212,17 +255,22 @@ namespace KosciachTools.Tween
             KosciachTween newKosciachTween = new KosciachTween(newTween);
             return newKosciachTween;
         }
-        public static KosciachTween RotationQuaternion(Transform transform, Quaternion target, float tweenTime)
+        public static KosciachTween RotationQuaternion(Transform transform, Quaternion to, float tweenTime)
         {
             if (tweenTime < 0)
             {
                 Debug.LogWarning("KosciachTween - tweenTime is negative!");
                 return null;
             }
+            if (transform == null)
+            {
+                Debug.LogWarning("KosciachTween - transform is null!");
+                return null;
+            }
 
 
             Guid newKey = Guid.NewGuid();
-            IEnumerator tweenCoroutine = RotationQuaternionCoroutine(newKey, transform, target, tweenTime);
+            IEnumerator tweenCoroutine = RotationQuaternionCoroutine(newKey, transform, to, tweenTime);
 
             Tween newTween = new Tween(newKey, tweenCoroutine);
             Tweens.Add(newKey, newTween);
@@ -230,7 +278,7 @@ namespace KosciachTools.Tween
             KosciachTween newKosciachTween = new KosciachTween(newTween);
             return newKosciachTween;
         }
-        private static IEnumerator RotationEulerCoroutine(Guid newKey, Transform transform, Vector3 target, float tweenTime)
+        private static IEnumerator RotationEulerCoroutine(Guid newKey, Transform transform, Vector3 to, float tweenTime)
         {
             Tween currentTween = Tweens[newKey];
 
@@ -246,9 +294,9 @@ namespace KosciachTools.Tween
                 float timeWithEase = currentTween.EaseMethod(time);
 
                 currentEuler = currentTween.IsLocal ? transform.localEulerAngles : transform.eulerAngles;
-                if (currentTween.Axis.HasFlag(TweenAxis.X)) currentEuler.x = Mathf.LerpUnclamped(startEuler.x, target.x, timeWithEase);
-                if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentEuler.y = Mathf.LerpUnclamped(startEuler.y, target.y, timeWithEase);
-                if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentEuler.z = Mathf.LerpUnclamped(startEuler.z, target.z, timeWithEase);
+                if (currentTween.Axis.HasFlag(TweenAxis.X)) currentEuler.x = Mathf.LerpUnclamped(startEuler.x, to.x, timeWithEase);
+                if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentEuler.y = Mathf.LerpUnclamped(startEuler.y, to.y, timeWithEase);
+                if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentEuler.z = Mathf.LerpUnclamped(startEuler.z, to.z, timeWithEase);
 
                 if (currentTween.IsLocal) transform.localEulerAngles = currentEuler;
                 else transform.eulerAngles = currentEuler;
@@ -261,9 +309,9 @@ namespace KosciachTools.Tween
             }
 
             currentEuler = currentTween.IsLocal ? transform.localEulerAngles : transform.eulerAngles;
-            if (currentTween.Axis.HasFlag(TweenAxis.X)) currentEuler.x = target.x;
-            if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentEuler.y = target.y;
-            if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentEuler.z = target.z;
+            if (currentTween.Axis.HasFlag(TweenAxis.X)) currentEuler.x = to.x;
+            if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentEuler.y = to.y;
+            if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentEuler.z = to.z;
 
             if (currentTween.IsLocal) transform.localEulerAngles = currentEuler;
             else transform.eulerAngles = currentEuler;
@@ -273,7 +321,7 @@ namespace KosciachTools.Tween
 
             Tweens.Remove(newKey);
         }
-        private static IEnumerator RotationQuaternionCoroutine(Guid newKey, Transform transform, Quaternion target, float tweenTime)
+        private static IEnumerator RotationQuaternionCoroutine(Guid newKey, Transform transform, Quaternion to, float tweenTime)
         {
             Tween currentTween = Tweens[newKey];
 
@@ -287,7 +335,7 @@ namespace KosciachTools.Tween
                 float time = elapsedTime / tweenTime;
                 float timeWithEase = currentTween.EaseMethod(time);
 
-                Quaternion rotation = Quaternion.LerpUnclamped(startQuaternion, target, timeWithEase);
+                Quaternion rotation = Quaternion.LerpUnclamped(startQuaternion, to, timeWithEase);
                 if (currentTween.IsLocal) transform.localRotation = rotation;
                 else transform.rotation = rotation;
 
@@ -298,8 +346,8 @@ namespace KosciachTools.Tween
                 yield return null;
             }
 
-            if (currentTween.IsLocal) transform.localRotation = target;
-            else transform.rotation = target;
+            if (currentTween.IsLocal) transform.localRotation = to;
+            else transform.rotation = to;
 
             currentTween.OnUpdate?.Invoke();
             currentTween.OnFinish?.Invoke();
@@ -310,17 +358,22 @@ namespace KosciachTools.Tween
 
 
         //ScaleTween---------------------------------------------------------------------------------------------------------------------------------------------------------
-        public static KosciachTween Scale(Transform transform, Vector3 target, float tweenTime)
+        public static KosciachTween Scale(Transform transform, Vector3 to, float tweenTime)
         {
             if (tweenTime < 0)
             {
                 Debug.LogWarning("KosciachTween - tweenTime is negative!");
                 return null;
             }
+            if (transform == null)
+            {
+                Debug.LogWarning("KosciachTween - transform is null!");
+                return null;
+            }
 
 
             Guid newKey = Guid.NewGuid();
-            IEnumerator tweenCoroutine = ScaleCoroutine(newKey, transform, target, tweenTime);
+            IEnumerator tweenCoroutine = ScaleCoroutine(newKey, transform, to, tweenTime);
 
             Tween newTween = new Tween(newKey, tweenCoroutine);
             Tweens.Add(newKey, newTween);
@@ -328,7 +381,7 @@ namespace KosciachTools.Tween
             KosciachTween newKosciachTween = new KosciachTween(newTween);
             return newKosciachTween;
         }
-        private static IEnumerator ScaleCoroutine(Guid newKey, Transform transform, Vector3 target, float tweenTime)
+        private static IEnumerator ScaleCoroutine(Guid newKey, Transform transform, Vector3 to, float tweenTime)
         {
             Tween currentTween = Tweens[newKey];
 
@@ -344,9 +397,9 @@ namespace KosciachTools.Tween
                 float timeWithEase = currentTween.EaseMethod(time);
 
                 currentScale = transform.localScale;
-                if (currentTween.Axis.HasFlag(TweenAxis.X)) currentScale.x = Mathf.LerpUnclamped(startScale.x, target.x, timeWithEase);
-                if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentScale.y = Mathf.LerpUnclamped(startScale.y, target.y, timeWithEase);
-                if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentScale.z = Mathf.LerpUnclamped(startScale.z, target.z, timeWithEase);
+                if (currentTween.Axis.HasFlag(TweenAxis.X)) currentScale.x = Mathf.LerpUnclamped(startScale.x, to.x, timeWithEase);
+                if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentScale.y = Mathf.LerpUnclamped(startScale.y, to.y, timeWithEase);
+                if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentScale.z = Mathf.LerpUnclamped(startScale.z, to.z, timeWithEase);
                 transform.localScale = currentScale;
 
                 currentTween.OnUpdate?.Invoke();
@@ -357,9 +410,9 @@ namespace KosciachTools.Tween
             }
 
             currentScale = transform.localScale;
-            if (currentTween.Axis.HasFlag(TweenAxis.X)) currentScale.x = target.x;
-            if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentScale.y = target.y;
-            if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentScale.z = target.z;
+            if (currentTween.Axis.HasFlag(TweenAxis.X)) currentScale.x = to.x;
+            if (currentTween.Axis.HasFlag(TweenAxis.Y)) currentScale.y = to.y;
+            if (currentTween.Axis.HasFlag(TweenAxis.Z)) currentScale.z = to.z;
             transform.localScale = currentScale;
 
             currentTween.OnUpdate?.Invoke();
@@ -457,6 +510,160 @@ namespace KosciachTools.Tween
             }
 
             currentTween.OnUpdateVector3D?.Invoke(to);
+            currentTween.OnFinish?.Invoke();
+
+            Tweens.Remove(newKey);
+        }
+
+
+
+        //VectorsTween---------------------------------------------------------------------------------------------------------------------------------------------------------
+        public static KosciachTween Float(float from, float to, float tweenTime)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+
+            Guid newKey = Guid.NewGuid();
+            IEnumerator tweenCoroutine = FloatCoroutine(newKey, from, to, tweenTime);
+
+            Tween newTween = new Tween(newKey, tweenCoroutine);
+            Tweens.Add(newKey, newTween);
+
+            KosciachTween newKosciachTween = new KosciachTween(newTween);
+            return newKosciachTween;
+        }
+        private static IEnumerator FloatCoroutine(Guid newKey, float from, float to, float tweenTime)
+        {
+            Tween currentTween = Tweens[newKey];
+
+            if (currentTween.Delay > 0) yield return new WaitForSeconds(currentTween.Delay);
+
+
+            float elapsedTime = 0;
+
+            while (elapsedTime < tweenTime)
+            {
+                float time = elapsedTime / tweenTime;
+                float timeWithEase = currentTween.EaseMethod(time);
+
+                float lerpValue = Mathf.LerpUnclamped(from, to, timeWithEase);
+                currentTween.OnUpdateFloat?.Invoke(lerpValue);
+
+                elapsedTime += Time.deltaTime;
+
+                yield return null;
+            }
+
+            currentTween.OnUpdateFloat?.Invoke(to);
+            currentTween.OnFinish?.Invoke();
+
+            Tweens.Remove(newKey);
+        }
+
+
+
+        //ColorTween---------------------------------------------------------------------------------------------------------------------------------------------------------
+        public static KosciachTween Color(Color from, Color to, float tweenTime)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+
+
+            Guid newKey = Guid.NewGuid();
+            IEnumerator tweenCoroutine = ColorCoroutine(newKey, from, to, tweenTime);
+
+            Tween newTween = new Tween(newKey, tweenCoroutine);
+            Tweens.Add(newKey, newTween);
+
+            KosciachTween newKosciachTween = new KosciachTween(newTween);
+            return newKosciachTween;
+        }
+        private static IEnumerator ColorCoroutine(Guid newKey, Color from, Color to, float tweenTime)
+        {
+            Tween currentTween = Tweens[newKey];
+
+            if (currentTween.Delay > 0) yield return new WaitForSeconds(currentTween.Delay);
+
+
+            float elapsedTime = 0;
+
+            while (elapsedTime < tweenTime)
+            {
+                float time = elapsedTime / tweenTime;
+                float timeWithEase = currentTween.EaseMethod(time);
+
+                Color lerpValue = UnityEngine.Color.LerpUnclamped(from, to, timeWithEase);
+                currentTween.OnUpdateColor?.Invoke(lerpValue);
+
+                elapsedTime += Time.deltaTime;
+
+                yield return null;
+            }
+
+            currentTween.OnUpdateColor?.Invoke(to);
+            currentTween.OnFinish?.Invoke();
+
+            Tweens.Remove(newKey);
+        }
+
+
+
+        //ScaleTween---------------------------------------------------------------------------------------------------------------------------------------------------------
+        public static KosciachTween CanvasGroupAlpha(CanvasGroup canvasGroup, float to, float tweenTime)
+        {
+            if (tweenTime < 0)
+            {
+                Debug.LogWarning("KosciachTween - tweenTime is negative!");
+                return null;
+            }
+            if (canvasGroup == null)
+            {
+                Debug.LogWarning("KosciachTween - canvasGroup is null!");
+                return null;
+            }
+
+            Guid newKey = Guid.NewGuid();
+            IEnumerator tweenCoroutine = CanvasGroupAlphaCoroutine(newKey, canvasGroup, to, tweenTime);
+
+            Tween newTween = new Tween(newKey, tweenCoroutine);
+            Tweens.Add(newKey, newTween);
+
+            KosciachTween newKosciachTween = new KosciachTween(newTween);
+            return newKosciachTween;
+        }
+        private static IEnumerator CanvasGroupAlphaCoroutine(Guid newKey, CanvasGroup canvasGroup, float to, float tweenTime)
+        {
+            Tween currentTween = Tweens[newKey];
+
+            if (currentTween.Delay > 0) yield return new WaitForSeconds(currentTween.Delay);
+
+            float startAlpha = canvasGroup.alpha;
+            float elapsedTime = 0;
+
+            while (elapsedTime < tweenTime)
+            {
+                float time = elapsedTime / tweenTime;
+                float timeWithEase = currentTween.EaseMethod(time);
+
+                canvasGroup.alpha = Mathf.LerpUnclamped(startAlpha, to, timeWithEase);
+
+                currentTween.OnUpdate?.Invoke();
+
+                elapsedTime += Time.deltaTime;
+
+                yield return null;
+            }
+
+            canvasGroup.alpha = to;
+
+            currentTween.OnUpdate?.Invoke();
             currentTween.OnFinish?.Invoke();
 
             Tweens.Remove(newKey);

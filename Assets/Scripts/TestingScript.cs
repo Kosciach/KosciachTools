@@ -1,11 +1,12 @@
 using KosciachTools.Delay;
 using KosciachTools.Tween;
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class TestingScript : MonoBehaviour
 {
-    public Vector3 a;
+    [SerializeField] int _tweenCount;
 
 
     private void Awake()
@@ -15,9 +16,11 @@ public class TestingScript : MonoBehaviour
 
     private void Test()
     {
-        KosciachTween.Vector3D(a, Vector3.one*5, 2).SetOnUpdate((Vector3 val) =>
-        {
-            a = val;
-        }).Run();
+        KosciachTween.Scale(transform, Vector3.zero, 5).Run();
+    }
+
+    private void Update()
+    {
+        _tweenCount = KosciachTween.GetTweensCount();
     }
 }
