@@ -16,7 +16,7 @@ public class TestingScript : MonoBehaviour
 
     private void Test()
     {
-        KosciachTween.Scale(transform, Vector3.zero, 5).Run();
+
     }
 
     private void Update()
