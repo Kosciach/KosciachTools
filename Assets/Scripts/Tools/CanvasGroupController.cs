@@ -15,25 +15,24 @@ namespace KosciachTools
         private void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
-            if (_canvasGroup == null)
-            {
-                Debug.LogError("CanvasGroupController - missing CanvasGroup");
-                enabled = false;
-            }
         }
 
 
         public void ToggleInteractable(bool isInteractable)
         {
+            if (_canvasGroup == null) _canvasGroup = GetComponent<CanvasGroup>();
             _canvasGroup.interactable = isInteractable;
         }
         public void ToggleBlocksRaycasts(bool blocksRaycasts)
         {
+            if (_canvasGroup == null) _canvasGroup = GetComponent<CanvasGroup>();
             _canvasGroup.blocksRaycasts = blocksRaycasts;
         }
 
         public void SetAlpha(float alpha, float time = 0)
         {
+            if (_canvasGroup == null) _canvasGroup = GetComponent<CanvasGroup>();
+
             float alphaTarget = Mathf.Clamp01(alpha);
             float tweenTime = Mathf.Clamp(time, 0, time);
 
@@ -42,6 +41,8 @@ namespace KosciachTools
                 _canvasGroup.alpha = alpha;
                 return;
             }
+
+            if(_alphaTweenCoroutine != null) StopCoroutine(_alphaTweenCoroutine);
 
             _alphaTweenCoroutine = TweenAlpha(alphaTarget, tweenTime);
             StartCoroutine(_alphaTweenCoroutine);
