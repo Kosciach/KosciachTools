@@ -3,6 +3,7 @@ using KosciachTools.Tween;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TestingScript : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class TestingScript : MonoBehaviour
 
     private void Test()
     {
-
+        SceneManager.LoadScene("Scene2");
     }
 
     private void Update()

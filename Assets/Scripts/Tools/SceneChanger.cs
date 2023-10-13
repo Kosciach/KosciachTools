@@ -3,6 +3,7 @@ using KosciachTools.Tween;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using KosciachTools.Canvas;
 using UnityEngine.UI;
 
 namespace KosciachTools.SceneChanger
@@ -20,9 +21,9 @@ namespace KosciachTools.SceneChanger
         private Action[] _sceneEnterAnimations;
         private Action<string>[] _sceneExitAnimations;
 
-        private Vector3 _leftPos => new Vector3((_canvasScaler.referenceResolution.x + 10), 0, 0);
+        private Vector3 _leftPos => new Vector3(-(_canvasScaler.referenceResolution.x + 10), 0, 0);
         private Vector3 _topPos => new Vector3(0, (_canvasScaler.referenceResolution.y + 180), 0);
-        private Vector3 _rightPos => new Vector3(-(_canvasScaler.referenceResolution.x + 10), 0, 0);
+        private Vector3 _rightPos => new Vector3((_canvasScaler.referenceResolution.x + 10), 0, 0);
         private Vector3 _bottomPos => new Vector3(0, -(_canvasScaler.referenceResolution.y + 180), 0);
 
 

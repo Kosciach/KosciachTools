@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioSettings
+namespace KosciachTools.Audio
 {
-    public float MusicVolume;
-    public float SoundsVolume;
+    [System.Serializable]
+    public class AudioSettings
+    {
+        public float MusicVolume;
+        public float SoundsVolume;
+    }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KosciachTools
+namespace KosciachTools.Canvas
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class CanvasGroupController : MonoBehaviour
