@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KosciachTools
+namespace KosciachTools.TransformUtility
 {
     public static class KosciachTransformUtility
     {

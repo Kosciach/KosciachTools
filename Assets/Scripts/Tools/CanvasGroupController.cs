@@ -9,7 +9,7 @@ namespace KosciachTools.Canvas
     {
         private CanvasGroup _canvasGroup;
         private IEnumerator _alphaTweenCoroutine;
-
+        private AnimationCurve _curve;
 
 
         private void Awake()
@@ -42,7 +42,27 @@ namespace KosciachTools.Canvas
                 return;
             }
 
+            _curve = null;
             if(_alphaTweenCoroutine != null) StopCoroutine(_alphaTweenCoroutine);
+
+            _alphaTweenCoroutine = TweenAlpha(alphaTarget, tweenTime);
+            StartCoroutine(_alphaTweenCoroutine);
+        }
+        public void SetAlpha(float alpha, float time, AnimationCurve curve)
+        {
+            if (_canvasGroup == null) _canvasGroup = GetComponent<CanvasGroup>();
+
+            float alphaTarget = Mathf.Clamp01(alpha);
+            float tweenTime = Mathf.Clamp(time, 0, time);
+
+            if (Mathf.Approximately(_canvasGroup.alpha, alpha))
+            {
+                _canvasGroup.alpha = alpha;
+                return;
+            }
+
+            _curve = curve;
+            if (_alphaTweenCoroutine != null) StopCoroutine(_alphaTweenCoroutine);
 
             _alphaTweenCoroutine = TweenAlpha(alphaTarget, tweenTime);
             StartCoroutine(_alphaTweenCoroutine);
@@ -55,8 +75,9 @@ namespace KosciachTools.Canvas
             while (timeElapsed < tweenTime)
             {
                 float time = timeElapsed / tweenTime;
+                float timeWithCurve = _curve == null ? time : _curve.Evaluate(time);
 
-                _canvasGroup.alpha = Mathf.LerpUnclamped(startAlpha, alphaTarget, time);
+                _canvasGroup.alpha = Mathf.LerpUnclamped(startAlpha, alphaTarget, timeWithCurve);
 
                 timeElapsed += Time.deltaTime;
 
