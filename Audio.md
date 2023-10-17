@@ -47,3 +47,9 @@
   GetSound - uses given key to return soundSource(only if key exists).<br>
   SetVolume - sets all soundsSources volume to given value.
 </p>
+
+<br>
+
+<p align="center">
+  <a href="README.md">ReadMe</a>
+</p>
