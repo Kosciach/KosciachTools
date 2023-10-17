@@ -1,4 +1,4 @@
-<h1 align="center">KosciachTools</h1>
+<h1 align="center">KosciachTools - readme in progress</h1>
 
 <p align="center">
   KosciachTools is unity package containing few of the script I use most in my gamejam games.<br>
