@@ -21,7 +21,7 @@ namespace KosciachTools.Audio
 
 
         private string _savePath => Application.dataPath + "/AudioSettings.json";
-
+        private const float _defaultVolume = 0.5f;
 
 
         private void Awake()
@@ -36,22 +36,35 @@ namespace KosciachTools.Audio
 
 
 
-        public void OnSceneEnter()
+        public void OnSceneEnter(Slider musicSlider, Slider soundsSlider)
         {
-            _musicSlider = GameObject.FindGameObjectWithTag("MusicSlider")?.GetComponent<Slider>();
-            _soundsSlider = GameObject.FindGameObjectWithTag("SoundsSlider")?.GetComponent<Slider>();
-
+            AssignSliders(musicSlider, soundsSlider);
+            HandleSettingsFile();
+            SetVolume();
+            UpdateSliders();
+        }
+        private void AssignSliders(Slider musicSlider, Slider soundsSlider)
+        {
+            _musicSlider = musicSlider;
+            _soundsSlider = soundsSlider;
+        }
+        private void HandleSettingsFile()
+        {
             if (File.Exists(_savePath)) LoadSettings();
             else
             {
-                _audioSettings.MusicVolume = 0.5f;
-                _audioSettings.SoundsVolume = 0.5f;
+                _audioSettings.MusicVolume = _defaultVolume;
+                _audioSettings.SoundsVolume = _defaultVolume;
                 SaveSettings();
             }
-
-            _musicSource.volume = _audioSettings.MusicVolume;
+        }
+        private void SetVolume()
+        {
+            if (_musicSource != null) _musicSource.volume = _audioSettings.MusicVolume;
             _soundSources.SetVolume(_audioSettings.SoundsVolume);
-
+        }
+        private void UpdateSliders()
+        {
             if (_musicSlider != null)
             {
                 _musicSlider.value = _audioSettings.MusicVolume;
@@ -63,6 +76,7 @@ namespace KosciachTools.Audio
                 _soundsSlider.onValueChanged.AddListener(ChangeSoundsValue);
             }
         }
+
 
 
         private void ChangeMusicValue(float volume)
