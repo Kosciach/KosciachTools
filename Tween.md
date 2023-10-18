@@ -40,6 +40,33 @@
 
 </p>
 
+<br>
+<h3 align="center">AvailableTweens</h3>
+<p align="center">
+
+  - `Position`: tweens Position.
+  - `RotationEuler`: tweens rotation using EulerAngles.
+  - `RotationQuaternion`: tweens rotation using Quaternion.
+  - `Scale`: tweens Scale.
+  - `Vector2D`: tweens Vector2 (requires use of onUpdate setting).
+  - `Vector3D`: tweens Vector3 (requires use of onUpdate setting).
+  - `Float`: tweens Float (requires use of onUpdate setting).
+  - `Color`: tweens Color (requires use of onUpdate setting).
+  - `CanvasGroupAlpha`: tweens CanvasGroup alpha, without the need of <a href="CanvasGroupController.md">CanvasGroupAlpha</a>.
+</p>
+
+<br>
+<h3 align="center">AdditionalSettings/Extentions</h3>
+<p align="center">
+
+  `AdditionalSettings or Extentions` are special parts of `Tween` class that are called during tweening.
+  All can be set by chaining methods to `AvailableTweens`.
+
+  - `SetDelay`: makes tween start after specified delay in seconds.
+  - `SetLocal`: used in `Position` and `Rotation`, tells those tweens to tween transform locally.
+  
+</p>
+
 <p align="center">
   <a href="README.md">ReadMe</a>
 </p>
