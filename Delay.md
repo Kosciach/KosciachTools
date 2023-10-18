@@ -32,6 +32,7 @@
   // Cancel the previously created delay
   KosciachDelay.CancelDelay(myDelay);
   ```
+</p>
 
 <br>
 <p align="center">
