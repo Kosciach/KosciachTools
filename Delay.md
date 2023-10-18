@@ -6,6 +6,7 @@
 <br>
 <h3 align="center">Usage</h3>
 <p align="center">
+  
   The `KosciachDelay` class provides methods for adding delays and cancelling them in Unity. This can be useful for scheduling actions to occur after a specified time.
 
   #### Adding a Delay
