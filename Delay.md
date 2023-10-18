@@ -19,7 +19,7 @@
       Debug.Log("Delayed action executed!");
   });
   ```
-
+##
   #### Cancelling a Delay
   - `CancelDelay(IEnumerator delay)`: Cancel a previously created delay by passing the IEnumerator returned by the Delay method. If the provided `delay` is null, a warning will be logged.
 
