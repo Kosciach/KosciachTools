@@ -4,6 +4,15 @@
 </p>
 
 <br>
+<h3 align="center">Setup</h3>
+<p align="center">
+  
+  To make `CanvasGroupController` work correctly:
+  - Find the object you want to use with CanvasGroupController.
+  - Add `CanvasGroupController` component. (CanvasGroup will be added automatically).
+</p>
+
+<br>
 <h3 align="center">Usage</h3>
 <p align="center">
   
