@@ -20,7 +20,7 @@
 
 <br>
 <h3 align="center">
-  <a href="Delay.d"> Delay </a>
+  <a href="Delay.md"> Delay </a>
 </h3>
 
 <br>
