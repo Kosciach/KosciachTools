@@ -7,12 +7,12 @@
 <h3 align="center">Setup</h3>
 <p align="center">
   
-  To make `CanvasGroupController` work correctly all steps must be followed:
+  To make `SceneChanger` work correctly all steps must be followed:
   - Create canvas with an image.
   - Stretch this image to cover the whole screen.
   - Change image color if needed.
-  - Add CanvasGroupController component.
-  - Set CanvasGroupController enter animation.
+  - Add SceneChanger component.
+  - Set SceneChanger enter animation.
 
   Or add provided prefab as child of the canvas.
 </p>
@@ -21,15 +21,15 @@
 <h3 align="center">Usage</h3>
 <p align="center">
   
-  The `CanvasGroupController` MonoBehaviour class `plays` animation when new scene loads and `loads` new scene after exit animation finished playing.
+  The `SceneChanger` MonoBehaviour class `plays` animation when new scene loads and `loads` new scene after exit animation finished playing.
 This creates `smooth` transition between scenes.
 
   #### SceneEntering
-  - `CanvasGroupController` provides 6 enter animations, option to not use animation or choose randomly. To change the animation simply change the field in the inspector.
+  - `SceneChanger` provides 6 enter animations, option to not use animation or choose randomly. To change the animation simply change the field in the inspector.
 
   #### SceneChanging
   - `ChangeScene(string sceneName,SceneExitAnimationType sceneExitAnimation)`: plays selected animation which changes scene when it ends.
-`CanvasGroupController` contains 6 exit animations and option to choose randomly.<br>
+`SceneChanger` contains 6 exit animations and option to choose randomly.<br>
   **Example:**
     ```csharp
     //SceneChanger reference
