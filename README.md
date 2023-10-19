@@ -1,39 +1,19 @@
-<h1 align="center">KosciachTools - readme in progress</h1>
+<h1 align="center">KosciachTools</h1>
 
 <p align="center">
-  KosciachTools is unity package containing few of the script I use most in my gamejam games.<br>
-  I made this package to speed up development of my next small games, and gain experience makins something else than games.<br>
+  KosciachTools is a Unity package designed to simplify game development by providing a collection of essential scripts commonly used in my game jams and small game projects.
+  This package aims to accelerate development of my next games.
 </p>
 
-<br>
-<h2 align="center">Tools in the package:</h2>
+##
+<h3 align="center">Tools Included</h3>
 
-<br>
-<h3 align="center">
-  <a href="Audio.md"> Audio </a>
-</h3>
+<p align="center"> <a href="Audio.md"> Audio </a> </p>
+<p align="center"> <a href="Tween.md"> Tween </a> </p>
+<p align="center"> <a href="Delay.md"> Delay </a> </p>
+<p align="center"> <a href="TransformUtility.md"> TransformUtility </a> </p>
+<p align="center"> <a href="CanvasGroupController.md"> CanvasGroupController </a> </p>
+<p align="center"> <a href="SceneChanger.md"> SceneChanger </a> </p>
 
-<br>
-<h3 align="center">
-  <a href="Tween.md"> Tween </a>
-</h3>
-
-<br>
-<h3 align="center">
-  <a href="Delay.d"> Delay </a>
-</h3>
-
-<br>
-<h3 align="center">
-  <a href="TransformUtility.md"> TransformUtility </a>
-</h3>
-
-<br>
-<h3 align="center">
-  <a href="CanvasGroupController.md"> CanvasGroupController </a>
-</h3>
-
-<br>
-<h3 align="center">
-  <a href="SceneChanger.md"> SceneChanger </a>
-</h3>
+##
+<h6 align="center">This repository does not include the package, since its for my own use only.</h6>
