@@ -98,18 +98,20 @@ namespace KosciachTools.Audio
         {
             if (_soundSources.KeyExists(soundName)) _soundSources.GetSound(soundName).Play();
         }
-        public void SpawnSound(Vector3 pos, bool localPos, string soundName)
+        public void SpawnSound(Vector3 pos, bool local, string soundName)
         {
             if (!_soundSources.KeyExists(soundName)) return;
 
 
             GameObject soundGameObject = new GameObject("Sound_" + soundName);
 
-            if (localPos) soundGameObject.transform.localPosition = pos;
+            if (local) soundGameObject.transform.localPosition = pos;
             else soundGameObject.transform.position = pos;
 
             AudioSource soundGameObjectAudioSource = soundGameObject.AddComponent<AudioSource>();
             soundGameObjectAudioSource = _soundSources.GetSound(soundName);
+
+            Destroy(soundGameObject, 5);
         }
 
 
