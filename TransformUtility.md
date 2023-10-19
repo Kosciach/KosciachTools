@@ -3,6 +3,7 @@
   A utility class for manipulating Unity's `Transform` components on only one axis.
 </p>
 
+##
 <br>
 <h3 align="center">Usage</h3>
 <p align="center">
@@ -18,11 +19,13 @@
   - `SetPosYLocal(Transform transform, float posY)`: Set the local Y position of the transform.
   - `SetPosZLocal(Transform transform, float posZ)`: Set the local Z position of the transform.
 
+##
   #### Scale
   - `SetScaleXLocal(Transform transform, float scaleX)`: Set the local X scale of the transform.
   - `SetScaleYLocal(Transform transform, float scaleY)`: Set the local Y scale of the transform.
   - `SetScaleZLocal(Transform transform, float scaleZ)`: Set the local Z scale of the transform.
 
+##
   #### Rotation
   - `SetRotX(Transform transform, float rotX)`: Set the X rotation of the transform.
   - `SetRotY(Transform transform, float rotY)`: Set the Y rotation of the transform.
@@ -38,6 +41,8 @@
   ```
 </p>
 
+##
+<br>
 <p align="center">
   <a href="README.md">ReadMe</a>
 </p>
