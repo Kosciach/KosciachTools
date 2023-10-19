@@ -22,11 +22,43 @@
   - In each scene create empty GameObject and name them AudioControllerExtender.
   - Add AudioControllerExtender component to each AudioControllerExtender GameObject.
   - If scene has sliders for controlling audio volume assign them in AudioControllerExtender inspector.
-
-  Or add provided prefab as child of the canvas.
 </p>
 
+##
+<br>
+<h3 align="center">Usage</h3>
+<p align="center">
+  
+  The `AudioController` MonoBehaviour class provides two methods for playing sounds.
 
+  #### PlaySound(string soundName)
+  - Using soundName gets correct AudioSource from `SoundsSourcesHolder` and plays its sound, but only if this soundName exists.<br>
+  **Example:**
+  ```csharp
+  //Play shootProjectile sound
+  AudioController.Instance.PlaySound(shootProjectile);
+  ```
+## 
+  #### SpawnSound(Vector3 pos, bool localPos, string soundName)
+  - This method instead of just playing sound, creates a new GameObject in the given position, local or global.
+  - Adds AudioSource from the `SoundsSourcesHolder` using soundName, to it and plays it.
+  - If soundName does not exit, GameObject will not be created and sound won't be played.
+  **Example:**
+  ```csharp
+  //Spawn beeb sound at center of the scene using global pos. 
+  AudioController.Instance.SpawnSound(Vector3.zero, false, beeb);
+  ```
+##    
+  To make Unity buttons `OnClick` work with `AudioController` sound playing, simply:
+  - Find button you want to play sound.
+  - Add new event (the +).
+  - Drag `AudioControllerExtender` into events object field.
+  - From dropdown select `PlaySoundOnButtonPress`.
+  - Enter name of the sound you want the button to play in the text field.
+  
+</p>
+
+##
 <p align="center">
   <a href="README.md">ReadMe</a>
 </p>
