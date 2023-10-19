@@ -3,6 +3,7 @@
   Component that allows to controll most important CanvasGroup aspects.
 </p>
 
+##
 <br>
 <h3 align="center">Setup</h3>
 <p align="center">
@@ -76,6 +77,7 @@ Easing can be applied by also passing `AnimationCurve` to the method.<br>
     ```
 </p>
 
+##
 <br>
 <p align="center">
   <a href="README.md">ReadMe</a>
