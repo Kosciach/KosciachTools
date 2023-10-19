@@ -3,6 +3,7 @@
   A utility class for easily adding and cancelling delays in Unity.
 </p>
 
+##
 <br>
 <h3 align="center">Usage</h3>
 <p align="center">
@@ -35,6 +36,7 @@
   ```
 </p>
 
+##
 <br>
 <p align="center">
   <a href="README.md">ReadMe</a>
