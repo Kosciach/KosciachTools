@@ -42,6 +42,7 @@
   #### SpawnSound(Vector3 pos, bool localPos, string soundName)
   - This method instead of just playing sound, creates a new GameObject in the given position, local or global.
   - Adds AudioSource from the `SoundsSourcesHolder` using soundName, to it and plays it.
+  - AudioSource GameObject is destroyed after 5s, this is enough time to play sounds and not clutter the scene.
   - If soundName does not exit, GameObject will not be created and sound won't be played.
   **Example:**
   ```csharp
