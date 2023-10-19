@@ -3,6 +3,7 @@
   Component that allows to change scenes with transitions.
 </p>
 
+##
 <br>
 <h3 align="center">Setup</h3>
 <p align="center">
@@ -29,6 +30,7 @@ This creates `smooth` transition between scenes.
   #### SceneEntering
   - `SceneChanger` provides 6 enter animations, option to not use animation or choose randomly. To change the animation simply change the field in the inspector.
 
+##
   #### SceneChanging
   - `ChangeScene(string sceneName,SceneExitAnimationType sceneExitAnimation)`: plays selected animation which changes scene when it ends.
 `SceneChanger` contains 6 exit animations and option to choose randomly.<br>
